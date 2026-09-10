@@ -1,4 +1,4 @@
-require_relative "custom_download_strategy"
+require_relative "../lib/custom_download_strategy"
 
 cask "smvn" do
   version "0.1.2"
