@@ -1,40 +1,63 @@
 # Homebrew Tap for SMVN
 
-Kho cài đặt Homebrew Cask chính thức cho **SMVN** (Smart Model & Multi-Agent Orchestrator for macOS).
+Official Homebrew Cask tap for **SMVN** (Smart Model & Multi-Agent Orchestrator for macOS).
 
-## 🚀 Cài đặt
+---
 
-### Bước 1: Thêm token GitHub (chỉ cần làm 1 lần vì repo SMVN là Private)
-Thêm dòng sau vào file `~/.zshrc`:
+## 🚀 Installation
+
+### Step 1: Configure GitHub API Token (One-time Setup)
+Because the SMVN repository is private, Homebrew requires an access token to download release assets.
+
+Add the following line to your `~/.zshrc`:
 ```bash
 export HOMEBREW_GITHUB_API_TOKEN=$(gh auth token)
 ```
-Sau đó tải lại cấu hình terminal:
+Reload your current shell session:
 ```bash
 source ~/.zshrc
 ```
 
-### Bước 2: Thêm tap và cài đặt SMVN
+### Step 2: Tap and Install SMVN
 ```bash
-# Thêm tap
+# 1. Add this tap
 brew tap manhnv319/tap
 
-# Cài đặt SMVN vào /Applications
+# 2. Mark the tap as trusted (Homebrew 6.0+ security requirement)
+brew trust manhnv319/tap
+
+# 3. Install SMVN into /Applications
 brew install --cask smvn
 ```
 
 ---
 
-## 🔄 Cập nhật phiên bản mới
+## 🔄 Upgrading
 
-Mỗi khi có bản phát hành mới trên GitHub Releases, chỉ cần chạy 1 lệnh:
+Whenever a new release is published on GitHub Releases, upgrade seamlessly with:
 ```bash
 brew upgrade --cask smvn
 ```
 
+Or upgrade all your Homebrew packages together:
+```bash
+brew upgrade
+```
+
 ---
 
-## 🗑️ Gỡ cài đặt
+## 🗑️ Uninstallation
+
+To completely remove SMVN:
 ```bash
-brew uninstall --cask smvn
+brew uninstall --cask smvn --zap
 ```
+
+*(The `--zap` flag cleans up application caches, preferences, and saved state).*
+
+---
+
+## 🛠️ Troubleshooting
+
+- **HTTP 404 on download:** Ensure `HOMEBREW_GITHUB_API_TOKEN` is set and has access to the private repository `manhnv319/smvn`. Verify with `echo $HOMEBREW_GITHUB_API_TOKEN`.
+- **Untrusted Tap error in Homebrew 6.0+:** Run `brew trust manhnv319/tap` to approve the custom download strategy.
