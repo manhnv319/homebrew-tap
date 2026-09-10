@@ -33,8 +33,11 @@ class GitHubPrivateRepositoryDownloadStrategy < CurlDownloadStrategy
     token = ENV["HOMEBREW_GITHUB_API_TOKEN"] || ENV["GITHUB_TOKEN"] || ENV["GH_TOKEN"]
     if token.nil? || token.strip.empty?
       begin
-        cmd_out = `gh auth token 2>/dev/null`.strip
-        token = cmd_out unless cmd_out.empty?
+        gh_bin = ["/opt/homebrew/bin/gh", "/usr/local/bin/gh", "gh"].find { |p| File.executable?(p) }
+        if gh_bin
+          cmd_out = `#{gh_bin} auth token 2>/dev/null`.strip
+          token = cmd_out unless cmd_out.empty?
+        end
       rescue StandardError
         # gh CLI not found or failed
       end
