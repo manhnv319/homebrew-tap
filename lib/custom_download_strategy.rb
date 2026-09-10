@@ -30,9 +30,19 @@ class GitHubPrivateRepositoryDownloadStrategy < CurlDownloadStrategy
   end
 
   def set_github_token
-    @github_token = ENV["HOMEBREW_GITHUB_API_TOKEN"] || ENV["GITHUB_TOKEN"]
+    token = ENV["HOMEBREW_GITHUB_API_TOKEN"] || ENV["GITHUB_TOKEN"] || ENV["GH_TOKEN"]
+    if token.nil? || token.strip.empty?
+      begin
+        cmd_out = `gh auth token 2>/dev/null`.strip
+        token = cmd_out unless cmd_out.empty?
+      rescue StandardError
+        # gh CLI not found or failed
+      end
+    end
+
+    @github_token = token
     unless @github_token
-      raise CurlDownloadStrategyError, "Environmental variable HOMEBREW_GITHUB_API_TOKEN is required to download from private repo."
+      raise CurlDownloadStrategyError, "Environmental variable HOMEBREW_GITHUB_API_TOKEN is required to download from private repo, or run `gh auth login`."
     end
 
     validate_github_repository_access!
