@@ -1,8 +1,11 @@
+require_relative "../lib/custom_download_strategy"
+
 cask "smvn" do
   version "0.1.2"
   sha256 "0f87f2bd11d84aee22ba833f93f1e8119c840c75c3657349a057ef36b33a2376"
 
-  url "https://github.com/manhnv319/smvn/releases/download/v#{version}/SMVN_#{version}_universal.dmg"
+  url "https://github.com/manhnv319/smvn/releases/download/v#{version}/SMVN_#{version}_universal.dmg",
+      using: GitHubPrivateRepositoryReleaseDownloadStrategy
   name "SMVN"
   desc "Smart Model & Multi-Agent Orchestrator for macOS"
   homepage "https://github.com/manhnv319/smvn"
