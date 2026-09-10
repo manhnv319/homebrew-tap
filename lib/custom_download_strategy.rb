@@ -77,13 +77,36 @@ class GitHubPrivateRepositoryReleaseDownloadStrategy < GitHubPrivateRepositoryDo
   end
 
   def download_url
-    "https://#{@github_token}@api.github.com/repos/#{@owner}/#{@repo}/releases/assets/#{asset_id}"
+    @cdn_url ||= resolve_asset_cdn_url
+    @cdn_url || "https://#{@github_token}@api.github.com/repos/#{@owner}/#{@repo}/releases/assets/#{asset_id}"
   end
 
   private
 
+  def resolve_asset_cdn_url
+    require "net/http"
+    require "uri"
+
+    uri = URI("https://api.github.com/repos/#{@owner}/#{@repo}/releases/assets/#{asset_id}")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    req = Net::HTTP::Get.new(uri)
+    req["Authorization"] = "Bearer #{@github_token}"
+    req["Accept"] = "application/octet-stream"
+    req["User-Agent"] = "Homebrew"
+
+    res = http.request(req)
+    res["location"] if res.code == "302" && res["location"]
+  rescue StandardError
+    nil
+  end
+
   def _fetch(url:, resolved_url:, timeout:)
-    curl_download download_url, "--header", "Accept: application/octet-stream", to: temporary_path, timeout: timeout
+    if download_url.start_with?("https://api.github.com")
+      curl_download download_url, "--header", "Accept: application/octet-stream", to: temporary_path, timeout: timeout
+    else
+      curl_download download_url, to: temporary_path, timeout: timeout
+    end
   end
 
   def asset_id
