@@ -1,8 +1,8 @@
 require_relative "../lib/custom_download_strategy"
 
 cask "smvn" do
-  version "0.2.0"
-  sha256 "60737d116b8f76d1d162498988645fd6f6b64dbe64bb8524cf07b2c85b4c2565"
+  version "0.2.1"
+  sha256 "367d3c88b47f0a2bf16725fd476d0feb3c687696e53ad82f96ac6277f0000a2f"
 
   url "https://github.com/manhnv319/smvn/releases/download/v#{version}/SMVN_#{version}_universal.dmg",
       using: GitHubPrivateRepositoryReleaseDownloadStrategy
